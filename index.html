@@ -232,6 +232,40 @@
       align-items: center;
       justify-content: center;
     }
+
+    /* Click effect */
+    .click-effect {
+      position: absolute;
+      pointer-events: none;
+      width: 80px;
+      height: 80px;
+      margin-left: -40px;
+      margin-top: -40px;
+      border-radius: 50%;
+      background: #fff;
+      transform: scale(0.2);
+      opacity: 0.95;
+      mix-blend-mode: screen;
+      animation: click-pop 700ms cubic-bezier(.2, .9, .3, 1);
+      z-index: 11111111111111111;
+    }
+
+    @keyframes click-pop {
+      0% {
+        transform: scale(0.2);
+        opacity: 0.95;
+      }
+
+      50% {
+        transform: scale(.6);
+        opacity: 0.8;
+      }
+
+      100% {
+        transform: scale(.8);
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 
@@ -294,6 +328,35 @@
     for (let i = 0; i < 20; i++) {
       setTimeout(createStar, i * 150);
     }
+  </script>
+
+  <script>
+    (function () {
+      function createClickEffect(x, y) {
+        const size = Math.max(window.innerWidth, window.innerHeight) * 0.08;
+        const el = document.createElement('div');
+        el.className = 'click-effect';
+        el.style.width = size + 'px';
+        el.style.height = size + 'px';
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        el.style.marginLeft = -(size / 2) + 'px';
+        el.style.marginTop = -(size / 2) + 'px';
+        document.body.appendChild(el);
+        el.addEventListener('animationend', function () { el.remove(); });
+        // fallback remove in case animationend doesn't fire
+        setTimeout(() => { if (el.parentNode) el.remove(); }, 900);
+      }
+
+      document.addEventListener('mousedown', function (e) {
+        createClickEffect(e.clientX, e.clientY);
+      }, { passive: true });
+
+      document.addEventListener('touchstart', function (e) {
+        const t = e.touches && e.touches[0];
+        if (t) createClickEffect(t.clientX, t.clientY);
+      }, { passive: true });
+    })();
   </script>
 
   <script>
